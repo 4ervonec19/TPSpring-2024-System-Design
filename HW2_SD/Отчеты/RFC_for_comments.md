@@ -23,7 +23,7 @@
 
 <figure>
   <img
-  src="2024-04-15_13-00-54.png"
+  src="images/C1_comments.png"
   alt="The beautiful MDN logo.">
   <figcaption>Рисунок 1 – уровень С1 для функционала «Комментарии к профилю</figcaption>
 </figure>
@@ -33,21 +33,21 @@
 
 #
  <img
-  src="2024-04-15_13-17-06.png"
+  src="images/C2_initial.png"
   alt="Рисунок 2 – Входной блок диаграммы С2">
   <figcaption>Рисунок 2 – Входной блок диаграммы С2 для комментариев к профилю</figcaption>
 </figure>
 
 #
  <img
-  src="2024-04-15_13-19-23.png"
+  src="images/C2_end.png"
   alt="Рисунок 2 – Входной блок диаграммы С2">
   <figcaption>Рисунок 3 – блок бизнес-логики в диаграмме С2</figcaption>
 </figure>
 
 #
  <img
-  src="2024-04-15_13-21-41.png"
+  src="images/C2_output.png"
   alt="">
   <figcaption>Рисунок 4 – Блок  связки диаграммы С2  с внешними системами</figcaption>
 </figure>
@@ -57,16 +57,16 @@
 
 #
  <img
-  src="2024-04-15_13-47-20.png"
+  src="images/C3_comment.png"
   alt="">
   <figcaption>Рисунок 5 – Диаграмма С3 для CRUD</figcaption>
 </figure>
 
 #
  <img
-  src="2024-04-15_13-47-20.png"
+  src="images/C3_moderation.png"
   alt="">
-  <figcaption>Рисунок 6 – Диаграмма С3 для сервиса авторизации</figcaption>
+  <figcaption>Рисунок 6 – Диаграмма С3 для сервиса модерации</figcaption>
 </figure>
 
 ## 1.3. Сложности и недочёты
@@ -81,16 +81,16 @@
 
 #
  <img
-  src="2024-04-15_18-38-35.png"
+  src="images/Sequence_diagram_start.png"
   alt="">
-  <figcaption>Рисунок 6 – Sequence-диаграмма (часть 1)</figcaption>
+  <figcaption>Рисунок 7 – Sequence-диаграмма (часть 1)</figcaption>
 </figure>
 
 #
  <img
-  src="2024-04-15_18-42-23.png"
+  src="images/Sequence_diagram_end.png"
   alt="">
-  <figcaption>Рисунок 7 – Sequence-диаграмма (часть 2)</figcaption>
+  <figcaption>Рисунок 8 – Sequence-диаграмма (часть 2)</figcaption>
 </figure>
 
 # 

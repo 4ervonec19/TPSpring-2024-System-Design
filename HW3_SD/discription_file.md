@@ -249,29 +249,33 @@ if __name__ == '__main__':
 @app.route('/get-new-record-link', methods = ['GET'])
 def API():
     connection = get_games_db_connection(params_games)
-    execute('SELECT link FROM games ORDER BY id DESC LINIT 1;')
-    link_new = execute.result # Получили новую запись
+    execute('SELECT link FROM games ORDER BY id DESC LIMIT 1;')
+    link_new = execute.result # Получили новую запись (линк)
     connection.close() # Стоп-connection
     
-    connection_cdn = get_cdn(params_cdn)
-    data = get_data_from_cdn(link_new)
-    connection_cdn.close()
+    connection_cdn = get_cdn(params_cdn) # Подключаемся к CDN
+    data = get_data_from_cdn(link_new) # Запрашиваем данные по ссылке
+    connection_cdn.close() # Стоп-connection
 
-    send_data(data, external_link)
+    send_data(data, external_link) # Отправляем поток через API по внешней ссылке
 
-    signal = input_signal
-    link = link
-    if signal == 1:
-        connection_cloud = get_cloud(params_cloud)
-        data = get_data_from_cloud(link)
-        send_data(data, external_link)
-        connection_cloud.close()
+    signal = input_signal # Флаговый сигнал на загрузку
+    link_download = link_download # Ссылка в cloud
+    if signal == true:
+        connection_cloud = get_cloud(params_cloud) # Коннект к облаку
+        data = get_data_from_cloud(link_download) # берем данные
+        send_data(data, external_link) # во внешнюю систему
+        connection_cloud.close() # Стоп-connection
         
 if __name__ == '__main__':
     app.run(debug = True)
 
 # Общая примерная реализация (Без углубленных знаний бэкэнда). 
 ```
+Так, необходимо прописать на уровне ***API*** просмотр ***БД*** игр, забирать оттуда ссылку, по которой будем брать данные из ***CDN*** и отправлять куда-то во вне. Также на вход будет поступать извне ***signal*** начала загрузки по ссылке, после чего будет загружаться файл (во внешней системе).
+
+5. Реализовать ***систему уведомлений***:
+
 
 
 
