@@ -101,7 +101,7 @@ So, something like that.
 
 >Говоря про реализацию постановки бизнес-проблемы и словесного пути решения сложно придумать какие-то подводные камни для данной задачи, однако, на мой взгляд, лучше будет произвести форматирование Технического Задания для разработчика. Формат хоть и ***свободный***, но лучше соблюсти момент формальных рамок. <br>
 <br>
-Если мы говорим про техническую часть задания, то думаю, что постановка задач **без** использования ***ООП*** может прослыть дурным тоном и другим разработчикам более высокого грейда будет мучительно разобраться в коде, который написал джун. Поэтому склоняюсь к тому, что стоит реализовать постановку задачи по алгоритму в терминах конкретных ***классов, атрибутов и методов***.
+Если мы говорим про техническую часть задания, то думаю, что постановка задач **без** использования ***ООП*** может прослыть дурным тоном и другим разработчикам более высокого грейда будет мучительно разобраться в коде, который написал джун. Поэтому склоняюсь к тому, что стоит реализовать постановку задачи по алгоритму в терминах конкретных ***классов, атрибутов и методов*** или применение отдельных ***функций***.
 
 ### Скорректированное решение ###
 
@@ -218,14 +218,14 @@ class BroadcastInfo:
 if __name__ == '__main__':
     broadcast = BroadcastInfo(name, link) # Экземпляр класса инфо о трансляции
     directory_db = directory #Ссылка на БД
-    insert_query = "INSERT INTO games (name, link) VALUES (%s, %s)"
+    insert_query = "INSERT INTO games (name, link) VALUES (%s, %s);"
     execute(insert_query, directory_db, (broadcast.name, broadcast.link)) # Записываем данные по сслыке
     close_connection() #Останавливаем соединение
 ```
 * Также необходимо добавить ***подгрузку данных в облако Google Cloud*** при начале новой трансляции. Это можно сделать добавив дополнительную логику к предыдщему коду:
 ```python
     if broadcast.empty_instance() == True:
-        read_query = f"SELECT * FROM cache WHERE link = '{broadcast.link}'"
+        read_query = f"SELECT * FROM cache WHERE link = {broadcast.link};"
         data = execute(read_query, cache_dir)
         write_in_cloud(broadcast.link, data) # Что-то вроде реализации записи в облако, откуда мы будем загружать
         # Соответственно нужно настроить связь с облачным сервисом
@@ -246,35 +246,91 @@ if __name__ == '__main__':
 ```
 4. Реализовать ***API-сервис*** с внутренней логикой: загрузка данных из **Google Cloud**, **CDN** и **прослушивание обновления БД игр** для забора линков. Он же будет передвать инфу во внешние сервисы.
 ```python
-@app.route('/get-new-record-link', methods = ['GET'])
-def API():
-    connection = get_games_db_connection(params_games)
-    execute('SELECT link FROM games ORDER BY id DESC LIMIT 1;')
-    link_new = execute.result # Получили новую запись (линк)
-    connection.close() # Стоп-connection
-    
-    connection_cdn = get_cdn(params_cdn) # Подключаемся к CDN
-    data = get_data_from_cdn(link_new) # Запрашиваем данные по ссылке
-    connection_cdn.close() # Стоп-connection
 
-    send_data(data, external_link) # Отправляем поток через API по внешней ссылке
+db_games_fields = {parameters}
+external_link = 'external_link_url'
 
-    signal = input_signal # Флаговый сигнал на загрузку
-    link_download = link_download # Ссылка в cloud
-    if signal == true:
-        connection_cloud = get_cloud(params_cloud) # Коннект к облаку
-        data = get_data_from_cloud(link_download) # берем данные
-        send_data(data, external_link) # во внешнюю систему
-        connection_cloud.close() # Стоп-connection
-        
+def get_games_db_connect(db_games_fields): # Подключаемся к БД игр
+    return connection(db_games_fields)
+
+def get_new_links_from_db():
+    connection = get_games_db_connect(db_games_fields)
+    connection.execute("SELECT link FROM games WHERE processed = False;") # Запрос в БД
+    new_records = get_from_games_db() # Забираем данные
+
+    return new_records
+
+def get_data_from_cdn(link):
+    response = get_data_cdn(link)
+    return response # Забрали данные
+
+def send_broadcast(data):
+    send(data, external_link) # Отправляем
+
+def mark_record_as_processed(link): # Что-то вроде пометки конца операции
+    connection.execute(f"UPDATE games SET processed = True WHERE link = {link};")
+    connection.close() # Stop
+
+app.route('/process-link')
+def process_incoming():
+    link = get_incoming_link()
+    data = get_data_from_cloud_for_download(link) # Берем данные для загрузки в cloud
+
+def main(): # Реализация логики
+    while True:
+        new_links = get_new_links_from_db()
+        for link in new_links:
+            data = get_data_from_cdn(link)
+            send_broadcast(data)
+            mark_record_as_processed(link)
+
 if __name__ == '__main__':
+    main()
     app.run(debug = True)
 
 # Общая примерная реализация (Без углубленных знаний бэкэнда). 
 ```
-Так, необходимо прописать на уровне ***API*** просмотр ***БД*** игр, забирать оттуда ссылку, по которой будем брать данные из ***CDN*** и отправлять куда-то во вне. Также на вход будет поступать извне ***signal*** начала загрузки по ссылке, после чего будет загружаться файл (во внешней системе).
+Так, необходимо прописать на уровне ***API*** просмотр ***БД*** игр, забирать оттуда ссылку, по которой будем брать данные из ***CDN*** и отправлять куда-то во вне. Также на вход будет поступать извне ***link*** загрузки по ссылке, после чего будет загружаться файл (во внешней системе).
 
 5. Реализовать ***систему уведомлений***:
+```python
+
+external_link = 'external_system_url'
+connection = conncetion_games_db(games_db_fields) # Подключаемся к полям
+
+def get_new_records():
+    connection.execute("SELECT name FROM games WHERE processed = False;") # Запрос
+    new_records = get_from_games_db() # Получаем данные
+    return new_records
+
+def get_users_from_extrenal_system(name):
+    response = send(name, external_link) # отправляем
+    return response
+
+def mark_record_as_processed(name): # Что-то вроде пометки конца операции
+    connection.execute(f"UPDATE games SET processed = True WHERE name = {name};")
+    connection.close() # Stop
+
+def send_message(users, name): # Отправляем месседж юзерам
+    for users in users:
+        print(f"Game {name} started the broadcast")
+
+def main(): # Основная логика
+    records = get_new_records()
+    for name in records:
+        users = get_users_from_extrenal_system(name)
+        send_message(users, name)
+        mark_record_as_processed(name)
+
+if __name__ == '__main__':
+    main()
+
+# Примерно такая логика
+```
+>В целом, именно такая роспись задачи для junior-специалиста самая верная. В первой вообще ничего не понятно и джун будет тонуть. Во второй реализации наглядно описаны классы, функции и внешняя обёртка. Остаётся лишь воплотить псевдокод в жизнь! <br>
+Говоря, о других постановках задач - они скорректированые до постановки по алгоритму.
+
+
 
 
 
