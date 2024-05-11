@@ -6,10 +6,18 @@
 
 * This Homework is focused on Sequence Diagrams & C4 Notation Techniques. It was suggested to create new features for different Steam game platform functions. I've choosen the Profile Comments and Profile Rating research.  
 
-### 3rd Home is right in the [home work 3 folder](HW3_SD) (***Updating right now***)
+### 3rd Homework is right in the [home work 3 folder](HW3_SD) (***Updating right now***)
 
 * This Homework is about the objective setting for different developers grades:
     * Algorithm case (***Junior***)
     * Result case (***Middle***)
     * Problem case (***Senior***)
     * S-M-A-R-T case
+
+### 4th Home is right in the [home work 4 folder](HW4_SD_API) (***Updating right now***)
+
+* This HomeTask is about API architecture build-up using ***Swagger Editor***. Here I implement ***post, get, put, delete & other business-logic operations for Steam's***: 
+
+    * Profile comments;
+
+    * Reviews;
