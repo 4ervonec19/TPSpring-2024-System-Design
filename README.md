@@ -18,6 +18,6 @@
 
 * This HomeTask is about API architecture build-up using ***Swagger Editor***. Here I implement ***post, get, put, delete & other business-logic operations for Steam's***: 
 
-    * Profile comments;
+    * [Profile comments](HW4_SD_API/API_profile_comments)
 
     * Reviews;
