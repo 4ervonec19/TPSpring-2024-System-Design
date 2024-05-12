@@ -14,10 +14,10 @@
     * Problem case (***Senior***)
     * S-M-A-R-T case
 
-### 4th Home is right in the [home work 4 folder](HW4_SD_API) (***Updating right now***)
+### 4th Homework is right in the [home work 4 folder](HW4_SD_API) (***Updating right now***)
 
 * This HomeTask is about API architecture build-up using ***Swagger Editor***. Here I implement ***post, get, put, delete & other business-logic operations for Steam's***: 
 
-    * Profile comments;
+    * [Profile comments](HW4_SD_API/API_profile_comments)
 
     * Reviews;
