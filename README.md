@@ -20,4 +20,4 @@
 
     * [Profile comments](HW4_SD_API/API_profile_comments)
 
-    * Reviews;
+    * [Reviews](HW4_SD_API/API_reviews)
