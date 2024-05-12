@@ -22,7 +22,7 @@
     }
   ],
   "paths": {
-    "/store.steampowered.com/appreviews/{appid}": {
+    "/store.steampowered.com/appreviews/{app_id}": {
       "get": {
         "summary": "Get reviews about Steam App or Game",
         "parameters": [
@@ -48,7 +48,7 @@
           {
             "name": "cursor",
             "in": "query",
-            "description": "Cursor",
+            "description": "Cursor that responsible for number of reviews on the page",
             "required": true,
             "schema": {
               "type": "string"
@@ -204,20 +204,20 @@
                             "example": "I like this game because I'm ermine"
                           },
                           "playtyme": {
-                            "type": "string",
-                            "example": "10,7 hours played"
+                            "type": "number",
+                            "example": 10.7
                           },
                           "num_positive_rates": {
-                            "type": "string",
-                            "example": "55 users think that review is positive"
+                            "type": "integer",
+                            "example": 55
                           },
                           "num_negative_rates": {
-                            "type": "string",
-                            "example": "45 users think that review is negative"
+                            "type": "integer",
+                            "example": 45
                           },
                           "num_funny_rates": {
-                            "type": "string",
-                            "example": "20 users think that review is funny"
+                            "type": "integer",
+                            "example": 20
                           }
                         },
                         "required": [
@@ -230,16 +230,16 @@
                       }
                     },
                     "num_reviews": {
-                      "type": "string",
-                      "example": "8,043,121"
+                      "type": "integer",
+                      "example": 8043121
                     },
                     "average_reviews_type": {
                       "type": "string",
                       "example": "Very positive"
                     },
                     "recent_num_reviews": {
-                      "type": "string",
-                      "example": "58,837"
+                      "type": "integer",
+                      "example": 58837
                     },
                     "average_recent_reviews_type": {
                       "type": "string",
@@ -285,7 +285,7 @@
         }
       }
     },
-    "/store.steampowered.com/appreviewhistogram/{appid}": {
+    "/store.steampowered.com/appreviewhistogram/{app_id}": {
       "get": {
         "summary": "Get histogram about Game Reviews",
         "parameters": [
@@ -337,51 +337,51 @@
                             "type": "string",
                             "description": "Date (Month or Day formatted DD-month_name-YY)",
                             "example": "23 May, 2024"
-                          },
-                          "count_array_positive": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "count_reviews_positive": {
-                                  "type": "integer",
-                                  "description": "Count of positive reviews per date",
-                                  "example": 50000
-                                }
-                              }
-                            }
-                          },
-                          "count_array_negative": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "count_reviews_negative": {
-                                  "type": "integer",
-                                  "description": "Count of negative reviews per date",
-                                  "example": 15000
-                                }
-                              }
-                            }
-                          },
-                          "num_reviews": {
-                            "type": "string",
-                            "example": "2,234,718"
-                          },
-                          "average_reviews_type": {
-                            "type": "string",
-                            "example": "Very positive"
-                          },
-                          "recent_num_reviews": {
-                            "type": "string",
-                            "example": "22,802"
-                          },
-                          "average_recent_reviews_type": {
-                            "type": "string",
-                            "example": "Very positive"
                           }
                         }
                       }
+                    },
+                    "count_array_positive": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "count_reviews_positive": {
+                            "type": "integer",
+                            "description": "Count of positive reviews per date",
+                            "example": 50000
+                          }
+                        }
+                      }
+                    },
+                    "count_array_negative": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "count_reviews_negative": {
+                            "type": "integer",
+                            "description": "Count of negative reviews per date",
+                            "example": 15000
+                          }
+                        }
+                      }
+                    },
+                    "num_reviews": {
+                      "type": "integer",
+                      "example": 2234718
+                    },
+                    "average_reviews_type": {
+                      "type": "string",
+                      "example": "Very positive"
+                    },
+                    "recent_num_reviews": {
+                      "type": "integer",
+                      "example": 22802
+                    },
+                    "average_recent_reviews_type": {
+                      "type": "string",
+                      "example": "Very positive"
                     }
                   }
                 }
@@ -423,16 +423,22 @@
         }
       }
     },
-    "/steamcommunity.com/userviews/rate/{appid}/{review_id}": {
+    "/store.steampowered.com//userreviews/rate/{review_id}": {
       "put": {
-        "summary": "Rate Review",
-        "description": "Allows to estimate the review using Like, Dislike, Funny, Reward etc.",
+        "summary": "Like/Dislike Review",
+        "description": "Allows to like or dislike the review",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ReviewFeaturesUpdated"
+                "type": "object",
+                "properties": {
+                  "rateup": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
               }
             }
           }
@@ -445,13 +451,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "notofication_message": {
+                    "notification_message": {
                       "type": "string",
-                      "example": "Successful Rate Update"
-                    },
-                    "updated_feature": {
-                      "type": "string",
-                      "example": "Like"
+                      "example": "Successful Like"
                     }
                   }
                 }
@@ -493,7 +495,83 @@
         }
       }
     },
-    "/steamcommunity.com/comment/Recommendation/{review_id}/{appid}": {
+    "/store.steampowered.com//userreviews/votetag/{review_id}": {
+      "put": {
+        "summary": "Award Review",
+        "description": "Allows to award the review",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rateup": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "tagid": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful award",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notification_message": {
+                      "type": "string",
+                      "example": "Successful award"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com/comment/Recommendation/{review_id}": {
       "get": {
         "summary": "Get list of comments under review",
         "description": "Allows to get list of cooments under review",
@@ -509,7 +587,7 @@
                     "properties": {
                       "comment": {
                         "type": "string",
-                        "example": "Wow, what a review"
+                        "example": "I like this game, because I'm ermine"
                       },
                       "user_name": {
                         "type": "string",
@@ -560,7 +638,292 @@
         }
       }
     },
-    "/steamcommunity.com/comment/Recommendation/post/{review_id}/{appid}": {
+    "/store.steampowered.com/friends/recommendgame": {
+      "post": {
+        "summary": "Post new Reviews under the Game",
+        "description": "Allows to post new Reviews under the Game",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "game_id": {
+                    "type": "integer",
+                    "description": "Game's ID",
+                    "example": 1234
+                  },
+                  "comment": {
+                    "type": "string",
+                    "description": "Text of the review",
+                    "example": "I like this game because I'm ermine!"
+                  },
+                  "rated_up": {
+                    "type": "boolean",
+                    "description": "Flag of Good/Bad review",
+                    "example": true
+                  },
+                  "is_public": {
+                    "type": "boolean",
+                    "description": "Flag of public/friends review",
+                    "example": true
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "Language of message",
+                    "example": "russian"
+                  },
+                  "recieved_compensation": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "allow_comments": {
+                    "type": "boolean",
+                    "description": "Flag to allow comments under review",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully published Review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reviewer_name": {
+                            "type": "string",
+                            "example": "4ervonec19"
+                          },
+                          "review_type": {
+                            "type": "string",
+                            "example": "Good review"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "23 May 2024"
+                          },
+                          "reviewer_text": {
+                            "type": "string",
+                            "example": "I like this game because I'm ermine!"
+                          },
+                          "playtyme": {
+                            "type": "number",
+                            "example": 10.7
+                          },
+                          "num_positive_rates": {
+                            "type": "integer",
+                            "example": 55
+                          },
+                          "num_negative_rates": {
+                            "type": "integer",
+                            "example": 45
+                          },
+                          "num_funny_rates": {
+                            "type": "integer",
+                            "example": 20
+                          }
+                        },
+                        "required": [
+                          "reviewer_name",
+                          "reviewer_type",
+                          "reviewer_text",
+                          "date",
+                          "playtime"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com/friends/recommendgame/post/{review_id}": {
+      "put": {
+        "summary": "Update Review under the Game",
+        "description": "Allows to Update your Reviews under the Games",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "description": "Text of the review",
+                    "example": "I like this game because I'm ermine! Update"
+                  },
+                  "rated_up": {
+                    "type": "boolean",
+                    "description": "Flag of Good/Bad review",
+                    "example": true
+                  },
+                  "is_public": {
+                    "type": "boolean",
+                    "description": "Flag of public/friends review",
+                    "example": true
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "Language of message",
+                    "example": "russian"
+                  },
+                  "recieved_compensation": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "allow_comments": {
+                    "type": "boolean",
+                    "description": "Flag to allow comments under review",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated Review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reviewer_name": {
+                            "type": "string",
+                            "example": "4ervonec19"
+                          },
+                          "review_type": {
+                            "type": "string",
+                            "example": "Good review"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "23 May 2024"
+                          },
+                          "reviewer_text": {
+                            "type": "string",
+                            "example": "I like this game because I'm ermine! Update"
+                          },
+                          "playtyme": {
+                            "type": "number",
+                            "example": 10.7
+                          },
+                          "num_positive_rates": {
+                            "type": "integer",
+                            "example": 55
+                          },
+                          "num_negative_rates": {
+                            "type": "integer",
+                            "example": 45
+                          },
+                          "num_funny_rates": {
+                            "type": "integer",
+                            "example": 20
+                          }
+                        },
+                        "required": [
+                          "reviewer_name",
+                          "reviewer_type",
+                          "reviewer_text",
+                          "date",
+                          "playtime"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/steamcommunity.com/comment/Recommendation/post/{user_id}/{app_id}": {
       "post": {
         "summary": "Post New Comments under review",
         "description": "Allows to post new comment under review",
@@ -620,10 +983,27 @@
         }
       }
     },
-    "/steamcommunity.com/userreviews/report/{report_id}": {
+    "/steamcommunity.com/userreviews/report/{review_id}": {
       "post": {
         "summary": "Hide and Report",
         "description": "Allows hide, report and complain on reviews",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reportnote": {
+                    "type": "string",
+                    "description": "Text of report",
+                    "example": "I totally disagree, because I'm ermine"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Report on this review",
@@ -670,7 +1050,7 @@
         }
       }
     },
-    "/steamcommunity.com/comment/Recommendation/{report_id}/{appid}": {
+    "/store.steampowered.com/friends/recommendgame/delete/{review_id}": {
       "delete": {
         "summary": "Delete review",
         "description": "Allows to delete your own review",
@@ -713,7 +1093,7 @@
         }
       }
     },
-    "/steamcommunity.com/minprofile/{user_id}": {
+    "/steamcommunity.com/miniprofile/{user_id}": {
       "get": {
         "summary": "Transfer to the comment's owner",
         "description": "Allows to get the comment's owner page info",
@@ -759,25 +1139,6 @@
   },
   "components": {
     "schemas": {
-      "ReviewFeaturesUpdated": {
-        "type": "object",
-        "properties": {
-          "comment_id": {
-            "type": "string",
-            "description": "Comment's ID for estimation",
-            "example": 1234
-          },
-          "feature_to_update": {
-            "type": "string",
-            "description": "Like, Dislike, Funny etc.",
-            "example": "Like"
-          }
-        },
-        "required": [
-          "comment_id",
-          "feature_to_update"
-        ]
-      },
       "ReviewCommentsCreate": {
         "type": "object",
         "properties": {
@@ -785,16 +1146,10 @@
             "type": "string",
             "description": "Text of comment",
             "example": "Thank's for your review"
-          },
-          "user_id": {
-            "type": "integer",
-            "description": "User's ID",
-            "example": 1234
           }
         },
         "required": [
-          "comment",
-          "user_id"
+          "comment"
         ]
       },
       "ReviewCommentsGet": {
@@ -809,6 +1164,11 @@
             "type": "string",
             "description": "Text",
             "example": "Thank's for your review"
+          },
+          "date_time": {
+            "type": "string",
+            "description": "Date & time of comment",
+            "example": " 23 May 12:00"
           }
         },
         "required": [
