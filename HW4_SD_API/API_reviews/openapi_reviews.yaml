@@ -1,0 +1,572 @@
+openapi: 3.0.0
+info: 
+  title: GamesReviews API
+  description: API for managing Game Reviews on Steam. Provides operations like CRUD, report, game rate, review mark, sort & filter, review comment and reviewer's profile view.
+  version: "1.0.0"
+schemes:
+  - https
+  - http
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+    - ApiKeyAuth: []
+    
+paths:
+  /store.steampowered.com/appreviews/{appid}:
+    get:
+      summary: Get reviews about Steam App or Game
+      parameters:
+        - name: appid
+          in: path
+          description: Game ID (appid)
+          required: true
+          schema:
+            type: integer
+            example: 570
+        - name: use_review_quality
+          in: query
+          description: Quality reviews flag (0 / 1)
+          required: true
+          schema:
+            type: integer
+        - name: cursor
+          in: query
+          description: Cursor
+          required: true
+          schema:
+            type: string
+        - name: day_range
+          in: query
+          description: Days range (example, 30)
+          required: true
+          schema:
+            type: integer
+        - name: start_date
+          in: query
+          description: Starting date for filtering (format - seconds/minutes. Actually, have no idea)
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          description: End date for filtering (format - seconds/minutes. Actually, have no idea)
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: date_range_type
+          in: query
+          description: Type of range (all, include)
+          required: true
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Reviews filter (summary, recent, updated, all, funny)
+          required: true
+          schema:
+            type: string
+        - name: language
+          in: query
+          description: Language type (example, en, ru / all)
+          required: true
+          schema:
+            type: string
+        - name: review_type
+          in: query
+          description: Review type (positive, negative, all)
+          required: true
+          schema:
+            type: string
+        - name: purchase_type
+          in: query
+          description: Purchase type (steam, non_steam_purchase, all)
+          required: true
+          schema:
+            type: string
+        - name: playtime_filter_min
+          in: query
+          description: Min playing time (minutes)
+          required: true
+          schema:
+            type: integer
+        - name: playtime_filter_max
+          in: query
+          description: Max playing time (minutes)
+          required: true
+          schema:
+            type: integer
+        - name: filter_offtopic_activity
+          in: query
+          description: Offtop-activity flag (0 / 1)
+          required: true
+          schema:
+            type: integer
+        - name: summary_num_positive_reviews
+          in: query
+          description: Number of positive reviews
+          required: true
+          schema:
+            type: integer
+        - name: summary_num_reviews
+          in: query
+          description: Total number of reviews
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful output with reviews list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        reviewer_name:
+                          type: string
+                          example: "4ervonec19" 
+                        review_type:
+                          type: string
+                          example: "Good review"
+                        date:
+                          type: string
+                          example: "23 May 2024"
+                        reviewer_text:
+                          type: string
+                          example: "I like this game because I'm ermine"
+                        playtyme:
+                          type: string
+                          example: "10,7 hours played"
+                        num_positive_rates:
+                          type: string
+                          example: "55 users think that review is positive"
+                        num_negative_rates:
+                          type: string
+                          example: '45 users think that review is negative'
+                        num_funny_rates:
+                          type: string
+                          example: '20 users think that review is funny'
+                      required:
+                        - reviewer_name
+                        - reviewer_type
+                        - reviewer_text
+                        - date
+                        - playtime
+                  num_reviews:
+                    type: string
+                    example: "8,043,121"
+                  average_reviews_type:
+                    type: string
+                    example: "Very positive"
+                  recent_num_reviews:
+                    type: string
+                    example:  '58,837'
+                  average_recent_reviews_type:
+                    type: string
+                    example: 'Very positive'
+                      
+                    
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+            description: Reviews Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Something wrong"
+                      
+  /store.steampowered.com/appreviewhistogram/{appid}:
+    get:
+      summary: Get histogram about Game Reviews
+      parameters:
+        - name: appid
+          in: path
+          description: Game ID (appid)
+          required: true
+          schema:
+            type: integer
+            example: 570
+        - name: l
+          in: query
+          description: Language of histplot's labels and legend
+          required: true
+          schema:
+            type: string
+            example: "russian"
+        - name: review_score_preference
+          in: query
+          description: Likely average Reviews type (example, Positive = 0 / Negative = 1)
+          required: true
+          schema:
+            type: integer
+            
+      responses:
+        '200':
+          description: Successful output with reviews list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date_array:
+                    type: array
+                    description: Array of dates for X axis
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          description: Date (Month or Day formatted DD-month_name-YY)
+                          example: "23 May, 2024"
+                        count_array_positive:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              count_reviews_positive:
+                                type: integer
+                                description: Count of positive reviews per date
+                                example: 50000
+                        count_array_negative:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              count_reviews_negative:
+                                type: integer
+                                description: Count of negative reviews per date
+                                example: 15000
+                        num_reviews:
+                          type: string
+                          example: '2,234,718'
+                        average_reviews_type:
+                          type: string
+                          example: "Very positive"
+                        recent_num_reviews:
+                          type: string
+                          example:  '22,802'
+                        average_recent_reviews_type:
+                          type: string
+                          example: 'Very positive'
+                        
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+          description: Data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Something wrong"
+                    
+  /steamcommunity.com/userviews/rate/{appid}/{review_id}:
+    put:
+      summary: Rate Review
+      description: Allows to estimate the review using Like, Dislike, Funny, Reward etc.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewFeaturesUpdated'
+      responses:
+        '200': 
+          description: Successful rate set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: 'Successful Rate Update'
+                  updated_feature:
+                    type: string
+                    example: 'Like'
+                      
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+          description: Data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Something wrong"
+                    
+  /steamcommunity.com/comment/Recommendation/{review_id}/{appid}:
+    get:
+      summary: Get list of comments under review
+      description: Allows to get list of cooments under review
+      responses:
+        '200':
+          description: Successfully shown comments list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    comment:
+                      type: string
+                      example: 'Wow, what a review'
+                    user_name:
+                      type: string
+                      example: '4ervonec19'
+                    date_time:
+                      type: string
+                      example: '23 May at 12:00'
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+          description: Data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Something wrong"
+                    
+  /steamcommunity.com/comment/Recommendation/post/{review_id}/{appid}:
+    post:
+      summary: Post New Comments under review
+      description: Allows to post new comment under review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewCommentsCreate'
+      responses:
+        '200':
+          description: Succsessfully created comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewCommentsGet'
+        '401':
+              description: Not authorized user
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      notofication_message:
+                        type: string
+                        example: "Not authorized user"
+        '404':
+            description: Data not found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Something wrong"
+
+               
+  /steamcommunity.com/userreviews/report/{report_id}:
+    post:
+      summary: Hide and Report
+      description: Allows hide, report and complain on reviews
+      responses:
+        '200':
+          description: Report on this review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewHideReport'
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+          description: Data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Something wrong"
+                
+  /steamcommunity.com/comment/Recommendation/{report_id}/{appid}:
+    delete:
+      summary: Delete review
+      description: Allows to delete your own review
+      responses:
+        '200':
+          description: Succsessfully Deleted review
+        
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+          description: Data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Something wrong"
+                    
+  /steamcommunity.com/minprofile/{user_id}:
+    get:
+      summary: Transfer to the comment's owner
+      description: Allows to get the comment's owner page info
+      responses: 
+        '200':
+            description: Succsessfully transfered to profile
+          
+        '401':
+            description: Not authorized user
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Not authorized user"
+        '404':
+            description: Data not found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Something wrong"
+    
+
+components:
+  schemas:
+    ReviewFeaturesUpdated:
+      type: object
+      properties:
+        comment_id:
+          type: string
+          description: Comment's ID for estimation
+          example: 1234
+        feature_to_update:
+          type: string
+          description: Like, Dislike, Funny etc.
+          example: 'Like'
+      required:
+        - comment_id
+        - feature_to_update
+    
+    ReviewCommentsCreate:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: Text of comment
+          example: "Thank's for your review"
+        user_id:
+          type: integer
+          description: User's ID
+          example: 1234
+      required:
+        - comment
+        - user_id
+    
+    
+    ReviewCommentsGet:
+      type: object
+      properties:
+        profile_name:
+          type: string
+          description: user's name
+          example: "4ervonec19"
+        comment:
+          type: string
+          description: Text
+          example: "Thank's for your review"
+        
+      required:
+        - profile_name
+        - comment
+        
+    ReviewHideReport:
+      type: object
+      properties:
+        notification_comment:
+          type: string
+          description: Text
+          example: "You've reported on this review"
+          
+           
+  
