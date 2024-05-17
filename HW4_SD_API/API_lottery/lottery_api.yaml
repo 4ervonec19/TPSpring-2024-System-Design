@@ -1,0 +1,327 @@
+openapi: 3.0.0
+info: 
+  title: SteamLottery API
+  description: API for Lottery System. Allows to get free or paid roulette game for user or friends company for playing or ownership.
+  version: "1.0.0"
+schemes:
+  - https
+  - http
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+    - ApiKeyAuth: []
+    
+paths:
+  /store.steampowered.com/{user_id}/friends/{friend_id}:
+    get:
+      summary: Get and Add selected friend to the Lobby
+      parameters:
+        - name: friend_id
+          in: path
+          description: Friend ID (friend_id) - found in the list of user's friends
+          required: true
+          schema:
+            type: integer
+            example: 20
+        - name: user_id
+          in: path
+          description: User ID (user_id) used to go to friends
+          required: true
+          schema:
+            type: integer
+            example: 10
+            
+      responses:
+        '200':
+          description: Successful query with friends info feedback
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  friends:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        notification_message:
+                          type: string
+                          example: "Successful added friends"
+                        friend_name:
+                          type: string
+                          example: "4ervonec19"
+                        friend_id:
+                          type: integer
+                          example: 20
+                        friend_avatar:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                pixel:
+                                  type: number
+                                  example: 0.2343
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+            description: Friends Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Something wrong"
+                      
+  /store.steamnotificationscenter.com/notify/{user_id}:
+    get:
+      summary: Allows to get notifications about new invite suggestions
+      parameters:
+      - name: user_id
+        in: path
+        description: ID of User (user_id) to invite
+        required: true
+        schema:
+          type: integer
+          example: 20
+      - name: inviter_id
+        in: query
+        description: ID of User who invites
+        required: true
+        schema:
+          type: integer
+          example: 10
+            
+      responses:
+        '200':
+          description: Successful invitation query 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notification_message:
+                    type: string
+                    example: "User 4ervonec19 invites you to lottery"
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+            description: User to invite Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Something wrong"
+  
+  /store.steamnotificationscenter.com/sendnotification:
+    post:
+      summary: Allows to send queries for joining lobby
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                friend_id:
+                  type: integer
+                  description: Friend to invite
+                  example: 20
+      responses:
+        '200':
+          description: Successfully sent notification
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    message:
+                      type: string
+                      example: "Notification sent to User"
+        '201':
+          description: User accepted your invite
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    message:
+                      type: string
+                      example: "User accepted notification"
+                    friend_id:
+                      type: integer
+                      example: 20
+        
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+            description: User to invite Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Something wrong"
+  
+  /store.steamlottery.com/lobby/{lobby_id}/post:
+    post:
+      summary: Allows to write new user fields
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_name:
+                    type: string
+                    example: "4ervonec19"
+                  user_id:
+                    type: integer
+                    example: 20
+      responses:
+        '200':
+          description: Successfully added user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    message:
+                      type: string
+                      example: "Successfully added user"
+                      
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notofication_message:
+                    type: string
+                    example: "Not authorized user"
+        '404':
+            description: User Not Found
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Something wrong"
+                      
+  /store.steamlottery.com/lobby/{lobby_id}/delete:
+    delete:
+      summary: Delete friends who hasn't accepted invitation
+      parameters:
+        - name: friend_id
+          in: query
+          description: Friend to drop from friends list
+          required: true
+          schema:
+            type: integer
+            example: 30
+      
+      responses:
+          '200':
+            description: Successfully deleted user
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                      message:
+                        type: string
+                        example: "Successfully deleted user"
+          '401':
+            description: Not authorized user
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    notofication_message:
+                      type: string
+                      example: "Not authorized user"
+          '404':
+              description: User to invite Not Found
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      notofication_message:
+                        type: string
+                        example: "Something wrong"
+                        
+  
+          
+      
+    
+                            
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+        
