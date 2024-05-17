@@ -22,7 +22,7 @@
     }
   ],
   "paths": {
-    "/store.steampowered.com/{user_id}/friends/{friend_id}": {
+    "/store.steamcommunity.com/profiles/{user_id}/friends/{friend_id}": {
       "get": {
         "summary": "Get and Add selected friend to the Lobby",
         "parameters": [
@@ -130,7 +130,7 @@
         }
       }
     },
-    "/store.steamnotificationscenter.com/notify/{user_id}": {
+    "/store.steamcommunity.com/profiles/{user_id}/notifications": {
       "get": {
         "summary": "Allows to get notifications about new invite suggestions",
         "parameters": [
@@ -207,26 +207,30 @@
         }
       }
     },
-    "/store.steamnotificationscenter.com/sendnotification": {
+    "/store.steamcommunity.com/profiles/{friend_id}/lobbyinvite/{lobby_id}": {
       "post": {
-        "summary": "Allows to send queries for joining lobby",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "friend_id": {
-                    "type": "integer",
-                    "description": "Friend to invite",
-                    "example": 20
-                  }
-                }
-              }
+        "parameters": [
+          {
+            "name": "friend_id",
+            "in": "path",
+            "description": "ID of User (user_id) to invite",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 20
+            }
+          },
+          {
+            "name": "lobby_id",
+            "in": "path",
+            "description": "ID of lobby to invate in",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 21
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Successfully sent notification",
@@ -299,9 +303,21 @@
         }
       }
     },
-    "/store.steamlottery.com/lobby/{lobby_id}/post": {
+    "/store.steamcommunity.com/lottery/lobby/{lobby_id}/users/post": {
       "post": {
         "summary": "Allows to write new user fields",
+        "parameters": [
+          {
+            "name": "lobby_id",
+            "in": "path",
+            "description": "lobby's ID to fill in",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 21
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -374,18 +390,28 @@
         }
       }
     },
-    "/store.steamlottery.com/lobby/{lobby_id}/delete": {
+    "/store.steamcommunity.com/lottery/lobby/{lobby_id}/users/delete": {
       "delete": {
         "summary": "Delete friends who hasn't accepted invitation",
         "parameters": [
           {
-            "name": "friend_id",
-            "in": "query",
-            "description": "Friend to drop from friends list",
+            "name": "lobby_id",
+            "in": "path",
+            "description": "Lobby's ID to delete users from",
             "required": true,
             "schema": {
               "type": "integer",
               "example": 30
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "User's to delete ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 13
             }
           }
         ],
@@ -424,6 +450,611 @@
           },
           "404": {
             "description": "User to invite Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steamcommunity.com/profiles/{user_id}/games": {
+      "get": {
+        "summary": "Allows to get games from each user's library",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "User ID to get games from library",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully acquired games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully added games"
+                    },
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "game_id": {
+                            "type": "integer",
+                            "example": 15
+                          },
+                          "game_name": {
+                            "type": "string",
+                            "example": "CS:GO"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User / Game Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com/content/getcontentdata": {
+      "get": {
+        "summary": "Allows to get games from market using filtering",
+        "parameters": [
+          {
+            "name": "hubtype",
+            "in": "query",
+            "description": "Market's field",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "demos"
+            }
+          },
+          {
+            "name": "genre",
+            "in": "query",
+            "description": "Game's genre",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "fantasy"
+            }
+          },
+          {
+            "name": "price_max",
+            "in": "query",
+            "description": "Game's price max",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "example": 2000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully acquired games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully added games"
+                    },
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "game_id": {
+                            "type": "integer",
+                            "example": 15
+                          },
+                          "game_name": {
+                            "type": "string",
+                            "example": "CS:GO"
+                          },
+                          "game_price": {
+                            "type": "number",
+                            "example": 2000
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User / Game Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steamcommunity.com/lottery/lobby/{lobby_id}/games/post": {
+      "post": {
+        "summary": "Allows to write new game fields",
+        "parameters": [
+          {
+            "name": "lobby_id",
+            "in": "path",
+            "description": "lobby's ID to fill in",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 21
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "game_name": {
+                    "type": "string",
+                    "example": "CS:GO"
+                  },
+                  "game_id": {
+                    "type": "integer",
+                    "example": 15
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully added user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully added games"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User / Game Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steamcommunity.com/lottery/lobby/{lobby_id}/games": {
+      "get": {
+        "summary": "Allows to get games from Games-Pool",
+        "parameters": [
+          {
+            "name": "lobby_id",
+            "in": "path",
+            "description": "Lobby's id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully acquired games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully acquired games"
+                    },
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "game_id": {
+                            "type": "integer",
+                            "example": 15
+                          },
+                          "game_name": {
+                            "type": "string",
+                            "example": "CS:GO"
+                          },
+                          "game_price": {
+                            "type": "number",
+                            "example": 2000
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User / Game Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steamcommunity.com/lottery/lobby/{lobby_id}/users": {
+      "get": {
+        "summary": "Allows to get users from the lobby",
+        "parameters": [
+          {
+            "name": "lobby_id",
+            "in": "path",
+            "description": "Lobby's id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully acquired users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully acquired users"
+                    },
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "user_id": {
+                            "type": "integer",
+                            "example": 10
+                          },
+                          "user_name": {
+                            "type": "string",
+                            "example": "4ervonec19"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steamcommunity.com/lottery/lobby/{lobby_id}/price/post": {
+      "post": {
+        "summary": "Allows to fill games config price",
+        "parameters": [
+          {
+            "name": "lobby_id",
+            "in": "path",
+            "description": "Lobby's id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "config_id": {
+                    "type": "integer",
+                    "example": 121
+                  },
+                  "config_price": {
+                    "type": "number",
+                    "example": 2500
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully added total price",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully added total price"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steamcommunity.com/lottery/lobby/{lobby_id}/price": {
+      "get": {
+        "summary": "Allows to get games config price",
+        "parameters": [
+          {
+            "name": "lobby_id",
+            "in": "path",
+            "description": "Lobby's id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully acquired total price",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully acquired total price"
+                    },
+                    "config_price": {
+                      "type": "number",
+                      "example": 2500
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price Not Found",
             "content": {
               "application/json": {
                 "schema": {
