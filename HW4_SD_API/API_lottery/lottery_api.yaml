@@ -140,6 +140,7 @@ paths:
   
   /store.steamcommunity.com/profiles/{friend_id}/lobbyinvite/{lobby_id}:
     post:
+      summary: Allows to get success message to inviter
       parameters:
       - name: friend_id
         in: path
