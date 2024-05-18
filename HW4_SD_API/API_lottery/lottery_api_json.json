@@ -1071,6 +1071,409 @@
           }
         }
       }
+    },
+    "/checkout.steampowered.com/{user_id}/checkout/post": {
+      "post": {
+        "summary": "Allows to transfer to payment system",
+        "parameters": [
+          {
+            "name": "user_id",
+            "required": true,
+            "in": "path",
+            "description": "User_id to go to the checkout",
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "card_name": {
+                    "type": "number",
+                    "example": "0000 0000 0000 0000"
+                  },
+                  "cvv_code": {
+                    "type": "number",
+                    "example": 0
+                  },
+                  "card_owner": {
+                    "type": "string",
+                    "example": "NAME SURNAME"
+                  },
+                  "payment_system": {
+                    "type": "string",
+                    "example": "MasterCard"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns phone/email-code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "integer",
+                      "example": "Returned code"
+                    },
+                    "pass_code": {
+                      "type": "number",
+                      "example": 1396
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout.steampowered.com/{user_id}/checkout/pay": {
+      "post": {
+        "summary": "Allows to enter the code",
+        "parameters": [
+          {
+            "name": "user_id",
+            "required": true,
+            "in": "path",
+            "description": "User_id to go to the checkout system",
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pass_code": {
+                    "type": "integer",
+                    "example": 1396
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns transaction success flag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Transaction committed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkout.steampowered.com/{user_id}/checkout": {
+      "get": {
+        "summary": "Allows to get info about transaction status",
+        "parameters": [
+          {
+            "name": "user_id",
+            "required": true,
+            "in": "path",
+            "description": "User_id to get payment status",
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns info about payment status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Succesful transaction"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steamcommunity.com/lottery/lobby/{lobby_id}/spin": {
+      "get": {
+        "summary": "Allows to spin the lottery to acquire games",
+        "parameters": [
+          {
+            "name": "lobby_id",
+            "required": true,
+            "in": "path",
+            "description": "lobby_id to return the win",
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returnes won game id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Succesful win"
+                    },
+                    "games_id": {
+                      "type": "integer",
+                      "example": 570
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steamcommunity.com/profiles/{user_id}/games/post": {
+      "post": {
+        "summary": "Allows to add new games in library of users",
+        "parameters": [
+          {
+            "name": "user_id",
+            "required": true,
+            "in": "path",
+            "description": "user_id to add winning games",
+            "schema": {
+              "type": "integer",
+              "example": 15
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "game_id": {
+                    "type": "integer",
+                    "example": 570
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Succesfully added game"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
