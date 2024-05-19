@@ -24,7 +24,7 @@
 
     * [Steam Lottery](HW4_SD_API/API_lottery) - our own feature
 
-### 5th Homework is right in the [home work 5 folder](HW4_SD_DB) (***Updating right now***)
+### 5th Homework is right in the [home work 5 folder](HW5_SD_DB) (***Updating right now***)
 
 * This HomeTask is about architecture of DataBases (based on 4th HomeTask)
 
