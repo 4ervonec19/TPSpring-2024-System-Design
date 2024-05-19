@@ -21,3 +21,11 @@
     * [Profile comments](HW4_SD_API/API_profile_comments)
 
     * [Reviews](HW4_SD_API/API_reviews)
+
+    * [Steam Lottery](HW4_SD_API/API_lottery) - our own feature
+
+### 5th Homework is right in the [home work 5 folder](HW4_SD_DB) (***Updating right now***)
+
+* This HomeTask is about architecture of DataBases (based on 4th HomeTask)
+
+
