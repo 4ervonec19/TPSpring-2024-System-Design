@@ -1,0 +1,392 @@
+openapi: 3.0.0
+info:
+  title: ProfileComments API
+  description: API for managing profile comments on Steam. Provides operations with comments like CRUD, notifications and report.
+  version: "1.0.0"
+host: 'steamcommunity.com'
+basePath: 'ISteamUserComments'
+schemes:
+  - https
+  - http
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+    - ApiKeyAuth: []
+paths:
+  /comment/Profile/{id}:
+    post:
+      summary: Create Profile comment
+      description: Allows write Profile comments
+      parameters:
+        - name: id
+          in: path
+          description: Profile ID
+          required: true
+          schema:
+            type: integer
+            example: 1234
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileCommentsCreate'
+      responses:
+        '200':
+          description: Succsessfully created comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileComments'
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsUnauthorizedError'
+        '402':
+            description: Incalid Content type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProfileCommentsPostError'
+  
+
+    get:
+      summary: Get all comments
+      parameters:
+        - name: id
+          in: path
+          description: Profile ID
+          required: true
+          schema:
+            type: integer
+            example: 1234
+      responses:
+        '200':
+          description: Succsessfully shown list of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/ProfileComments'
+    
+    put: 
+      summary: Update Comments
+      parameters:
+        - name: id
+          in: path
+          description: Profile ID
+          required: true
+          schema:
+            type: integer
+            example: 1234
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileCommentsUpdate'
+      responses:
+        '200':
+          description: Succsessfully updated comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsUpdateGet'
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsUnauthorizedError'
+        '402':
+            description: Incalid Content type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProfileCommentsPostError'
+    delete:
+      summary: Delete Comments
+      parameters:
+        - name: id
+          in: path
+          description: Profile ID
+          required: true
+          schema:
+            type: integer
+            example: 1234
+      responses:
+        '200':
+          description: Succsessfully Deleted comment
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsUnauthorizedError'
+                
+  /comment/Profile/{id}/hideandreport/{comment_id}:
+    post:
+      summary: Allows hide, report and complain on the Profile Comments
+      parameters:
+        - name: comment_id
+          in: path
+          description: comment ID
+          required: true
+          schema:
+            type: integer
+            example: 1234
+        - name: id
+          in: path
+          description: Profile ID
+          required: true
+          schema:
+            type: integer
+            example: 1224
+      responses:
+        '200':
+          description: Report on this comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsHide'
+  
+              
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsUnauthorizedError'
+                
+  /comment/Profile/subscribe/{id}:
+    post:
+      summary: Subscribe for new profile comments
+      description: Allows to get notifications about new profile comments
+      parameters:
+        - name: id
+          in: path
+          description: Profile ID to subscribe
+          required: true
+          schema:
+            type: integer
+            example: 1234
+      responses:
+        '200':
+          description: Succesful subscribe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsSubscribeIDMessage'
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsUnauthorizedError'
+                
+  /comment/Profile/notifications/{id}:
+    get:
+      summary: Get Notifications about new comments
+      description: Allows to get notifications about new comments
+      parameters:
+        - name: id
+          in: path
+          description: Profile ID to notify about new comments
+          required: True
+          schema:
+            type: integer
+            example: 1234
+      responses:
+        '200':
+          description: Succsessfully shown list of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/NotificationsList'
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsUnauthorizedError'
+  
+  # При получении запроса на сохранение нового комментария сервис комментариев через Брокер Сообщений отправляет запрос сервису уведомлений с ID владельца страницы, который отправляет уведомления пользователям, подписанным на данный ID.
+  
+  /comment/Profile/getfull/{id}:
+    get:
+      summary: Get full list of comments
+      description: Allows to get full list and Number of Profile Comments
+      parameters:
+        - name: id
+          in: path
+          description: Profile ID
+          required: true
+          schema:
+            type: integer
+            example: 1234
+      
+      responses:
+        '200':
+          description: Succsessfully got full list of comments and total count value
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/CommentsList'
+        '401':
+          description: Not authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileCommentsUnauthorizedError'
+    
+components:
+  schemas:
+    ProfileCommentsCreate:
+      type: object
+      properties:
+        comment:
+          type: string
+          description: Text
+          example: "How's it going, bro?"
+      required:
+        - comment
+          
+    ProfileComments:
+      type: object
+      properties:
+        profile_name:
+          type: string
+          description: user's name
+          example: "4ervonec19"
+        comment:
+          type: string
+          description: Text
+          example: "How's it going, bro?"
+        
+      required:
+        - profile_name
+        - comment
+        
+    ProfileCommentsUnauthorizedError:
+      type: object
+      properties:
+        notification:
+          type: string
+          description: Text
+          example: "Unauthorized user"
+      required:
+        - notification
+    
+    ProfileCommentsPostError:
+      type: object
+      properties:
+        notification:
+          type: string
+          description: Text
+          example: "Invalid content type"
+      required:
+        - notification
+        
+    ProfileCommentsUpdate:
+      type: object
+      properties:
+        comment_id:
+          type: integer
+          description: New comment's ID
+          example: 1234
+        new_comment:
+          type: string
+          description: New comment to replace previous
+          example: "How's it going, bro, right now?"
+      required :
+        - new_comment    
+    
+    ProfileCommentsUpdateGet:
+      type: object
+      properties:
+        profile_name:
+          type: string
+          description: user's name
+          example: "4ervonec19"
+        new_comment:
+          type: string
+          description: Text
+          example: "How's it going, bro, right now?"
+      required :
+        - new_comment
+        - profile_name
+        
+    ProfileCommentsHide:
+      type: object
+      properties:
+        notification_comment:
+          type: string
+          description: Text
+          example: "You've reported on this comment"
+        
+          
+      
+    
+    NotificationsList:
+      type: object
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+
+    Notification:
+      type: object
+      required:
+        - profile_name
+        - comment
+      properties:
+        profile_name:
+          type: string
+          description: New comment's profile name
+          example: "4ervonec19"
+        comment:
+          type: string
+          description: Profile Comment
+          example: "New comment text"  
+      
+    ProfileCommentsSubscribeID:
+      type: object
+      required:
+        - user_id
+      properties:
+        user_id:
+          type: integer
+          description: User's ID
+          example: "Successful subscribe on 4ervonec19"
+      
+    ProfileCommentsSubscribeIDMessage:
+      type: object
+      required:
+        - notification_subscribe
+      properties:
+        notification_subscribe:
+          type: string
+          description: Message about succsessful subscribe
+          example: "Successful subscribe on 4ervonec19"
+      
+    
+    CommentsList:
+      type: object
+      properties:
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfileComments'
+
+  

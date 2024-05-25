@@ -1,0 +1,1289 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "GamesReviews API",
+    "description": "API for managing Game Reviews on Steam. Provides operations like CRUD, report, game rate, review mark, sort & filter, review comment and reviewer's profile view.",
+    "version": "1.0.0"
+  },
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/store.steampowered.com/appreviews/{app_id}": {
+      "get": {
+        "summary": "Get reviews about Steam App or Game",
+        "parameters": [
+          {
+            "name": "app_id",
+            "in": "path",
+            "description": "Game ID (appid)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 570
+            }
+          },
+          {
+            "name": "use_review_quality",
+            "in": "query",
+            "description": "Quality reviews flag (0 / 1)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Cursor that responsible for number of reviews on the page",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "day_range",
+            "in": "query",
+            "description": "Days range (example, 30)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Starting date for filtering (format - seconds/minutes. Actually, have no idea)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for filtering (format - seconds/minutes. Actually, have no idea)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "date_range_type",
+            "in": "query",
+            "description": "Type of range (all, include)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "Reviews filter (summary, recent, updated, all, funny)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "Language type (example, en, ru / all)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "review_type",
+            "in": "query",
+            "description": "Review type (positive, negative, all)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "purchase_type",
+            "in": "query",
+            "description": "Purchase type (steam, non_steam_purchase, all)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "playtime_filter_min",
+            "in": "query",
+            "description": "Min playing time (minutes)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "playtime_filter_max",
+            "in": "query",
+            "description": "Max playing time (minutes)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filter_offtopic_activity",
+            "in": "query",
+            "description": "Offtop-activity flag (0 / 1)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "summary_num_positive_reviews",
+            "in": "query",
+            "description": "Number of positive reviews",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "summary_num_reviews",
+            "in": "query",
+            "description": "Total number of reviews",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful output with reviews list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reviewer_name": {
+                            "type": "string",
+                            "example": "4ervonec19"
+                          },
+                          "review_type": {
+                            "type": "string",
+                            "example": "Good review"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "23 May 2024"
+                          },
+                          "reviewer_text": {
+                            "type": "string",
+                            "example": "I like this game because I'm ermine"
+                          },
+                          "playtyme": {
+                            "type": "number",
+                            "example": 10.7
+                          },
+                          "num_positive_rates": {
+                            "type": "integer",
+                            "example": 55
+                          },
+                          "num_negative_rates": {
+                            "type": "integer",
+                            "example": 45
+                          },
+                          "num_funny_rates": {
+                            "type": "integer",
+                            "example": 20
+                          }
+                        },
+                        "required": [
+                          "reviewer_name",
+                          "reviewer_type",
+                          "reviewer_text",
+                          "date",
+                          "playtime"
+                        ]
+                      }
+                    },
+                    "num_reviews": {
+                      "type": "integer",
+                      "example": 8043121
+                    },
+                    "average_reviews_type": {
+                      "type": "string",
+                      "example": "Very positive"
+                    },
+                    "recent_num_reviews": {
+                      "type": "integer",
+                      "example": 58837
+                    },
+                    "average_recent_reviews_type": {
+                      "type": "string",
+                      "example": "Very positive"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Reviews Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com/appreviewhistogram/{app_id}": {
+      "get": {
+        "summary": "Get histogram about Game Reviews",
+        "parameters": [
+          {
+            "name": "app_id",
+            "in": "path",
+            "description": "Game ID (appid)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 570
+            }
+          },
+          {
+            "name": "l",
+            "in": "query",
+            "description": "Language of histplot's labels and legend",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "russian"
+            }
+          },
+          {
+            "name": "review_score_preference",
+            "in": "query",
+            "description": "Likely average Reviews type (example, Positive = 0 / Negative = 1)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful output with reviews list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "date_array": {
+                      "type": "array",
+                      "description": "Array of dates for X axis",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "description": "Date (Month or Day formatted DD-month_name-YY)",
+                            "example": "23 May, 2024"
+                          }
+                        }
+                      }
+                    },
+                    "count_array_positive": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "count_reviews_positive": {
+                            "type": "integer",
+                            "description": "Count of positive reviews per date",
+                            "example": 50000
+                          }
+                        }
+                      }
+                    },
+                    "count_array_negative": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "count_reviews_negative": {
+                            "type": "integer",
+                            "description": "Count of negative reviews per date",
+                            "example": 15000
+                          }
+                        }
+                      }
+                    },
+                    "num_reviews": {
+                      "type": "integer",
+                      "example": 2234718
+                    },
+                    "average_reviews_type": {
+                      "type": "string",
+                      "example": "Very positive"
+                    },
+                    "recent_num_reviews": {
+                      "type": "integer",
+                      "example": 22802
+                    },
+                    "average_recent_reviews_type": {
+                      "type": "string",
+                      "example": "Very positive"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com//userreviews/rate/{review_id}": {
+      "put": {
+        "summary": "Like/Dislike Review",
+        "description": "Allows to like or dislike the review",
+        "parameters": [
+          {
+            "name": "review_id",
+            "in": "path",
+            "description": "review ID (review_id)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "example": 570
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rateup": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful rate set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notification_message": {
+                      "type": "string",
+                      "example": "Successful Like"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com//userreviews/votetag/{review_id}": {
+      "put": {
+        "summary": "Award Review",
+        "description": "Allows to award the review",
+        "parameters": [
+          {
+            "name": "review_id",
+            "in": "path",
+            "description": "review ID (review_id)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rateup": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "tagid": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful award",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notification_message": {
+                      "type": "string",
+                      "example": "Successful award"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com/comment/Recommendation/{review_id}": {
+      "get": {
+        "summary": "Get list of comments under review",
+        "description": "Allows to get list of cooments under review",
+        "parameters": [
+          {
+            "name": "review_id",
+            "in": "path",
+            "description": "review ID (review_id)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully shown comments list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "comment": {
+                        "type": "string",
+                        "example": "I like this game, because I'm ermine"
+                      },
+                      "user_name": {
+                        "type": "string",
+                        "example": "4ervonec19"
+                      },
+                      "date_time": {
+                        "type": "string",
+                        "example": "23 May at 12:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com/friends/recommendgame": {
+      "post": {
+        "summary": "Post new Reviews under the Game",
+        "description": "Allows to post new Reviews under the Game",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "game_id": {
+                    "type": "integer",
+                    "description": "Game's ID",
+                    "example": 1234
+                  },
+                  "comment": {
+                    "type": "string",
+                    "description": "Text of the review",
+                    "example": "I like this game because I'm ermine!"
+                  },
+                  "rated_up": {
+                    "type": "boolean",
+                    "description": "Flag of Good/Bad review",
+                    "example": true
+                  },
+                  "is_public": {
+                    "type": "boolean",
+                    "description": "Flag of public/friends review",
+                    "example": true
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "Language of message",
+                    "example": "russian"
+                  },
+                  "recieved_compensation": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "allow_comments": {
+                    "type": "boolean",
+                    "description": "Flag to allow comments under review",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully published Review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reviewer_name": {
+                            "type": "string",
+                            "example": "4ervonec19"
+                          },
+                          "review_type": {
+                            "type": "string",
+                            "example": "Good review"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "23 May 2024"
+                          },
+                          "reviewer_text": {
+                            "type": "string",
+                            "example": "I like this game because I'm ermine!"
+                          },
+                          "playtyme": {
+                            "type": "number",
+                            "example": 10.7
+                          },
+                          "num_positive_rates": {
+                            "type": "integer",
+                            "example": 55
+                          },
+                          "num_negative_rates": {
+                            "type": "integer",
+                            "example": 45
+                          },
+                          "num_funny_rates": {
+                            "type": "integer",
+                            "example": 20
+                          }
+                        },
+                        "required": [
+                          "reviewer_name",
+                          "reviewer_type",
+                          "reviewer_text",
+                          "date",
+                          "playtime"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com/friends/recommendgame/post/{review_id}": {
+      "put": {
+        "summary": "Update Review under the Game",
+        "description": "Allows to Update your Reviews under the Games",
+        "parameters": [
+          {
+            "name": "review_id",
+            "in": "path",
+            "description": "review ID (review_id)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "comment": {
+                    "type": "string",
+                    "description": "Text of the review",
+                    "example": "I like this game because I'm ermine! Update"
+                  },
+                  "rated_up": {
+                    "type": "boolean",
+                    "description": "Flag of Good/Bad review",
+                    "example": true
+                  },
+                  "is_public": {
+                    "type": "boolean",
+                    "description": "Flag of public/friends review",
+                    "example": true
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "Language of message",
+                    "example": "russian"
+                  },
+                  "recieved_compensation": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "allow_comments": {
+                    "type": "boolean",
+                    "description": "Flag to allow comments under review",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated Review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "reviewer_name": {
+                            "type": "string",
+                            "example": "4ervonec19"
+                          },
+                          "review_type": {
+                            "type": "string",
+                            "example": "Good review"
+                          },
+                          "date": {
+                            "type": "string",
+                            "example": "23 May 2024"
+                          },
+                          "reviewer_text": {
+                            "type": "string",
+                            "example": "I like this game because I'm ermine! Update"
+                          },
+                          "playtyme": {
+                            "type": "number",
+                            "example": 10.7
+                          },
+                          "num_positive_rates": {
+                            "type": "integer",
+                            "example": 55
+                          },
+                          "num_negative_rates": {
+                            "type": "integer",
+                            "example": 45
+                          },
+                          "num_funny_rates": {
+                            "type": "integer",
+                            "example": 20
+                          }
+                        },
+                        "required": [
+                          "reviewer_name",
+                          "reviewer_type",
+                          "reviewer_text",
+                          "date",
+                          "playtime"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/steamcommunity.com/comment/Recommendation/post/{user_id}/{app_id}": {
+      "post": {
+        "summary": "Post New Comments under review",
+        "description": "Allows to post new comment under review",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "User ID (user_id)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "app_id",
+            "in": "path",
+            "description": "App ID (app_id)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewCommentsCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succsessfully created comment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewCommentsGet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/steamcommunity.com/userreviews/report/{review_id}": {
+      "post": {
+        "summary": "Hide and Report",
+        "description": "Allows hide, report and complain on reviews",
+        "parameters": [
+          {
+            "name": "review_id",
+            "in": "path",
+            "description": "review ID (review_id)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reportnote": {
+                    "type": "string",
+                    "description": "Text of report",
+                    "example": "I totally disagree, because I'm ermine"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Report on this review",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewHideReport"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store.steampowered.com/friends/recommendgame/delete/{review_id}": {
+      "delete": {
+        "summary": "Delete review",
+        "description": "Allows to delete your own review",
+        "parameters": [
+          {
+            "name": "review_id",
+            "in": "path",
+            "description": "review ID (review_id)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succsessfully Deleted review"
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/steamcommunity.com/miniprofile/{user_id}": {
+      "get": {
+        "summary": "Transfer to the comment's owner",
+        "description": "Allows to get the comment's owner page info",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "User (user_id)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succsessfully transfered to profile"
+          },
+          "401": {
+            "description": "Not authorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Not authorized user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Data not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "notofication_message": {
+                      "type": "string",
+                      "example": "Something wrong"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ReviewCommentsCreate": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string",
+            "description": "Text of comment",
+            "example": "Thank's for your review"
+          }
+        },
+        "required": [
+          "comment"
+        ]
+      },
+      "ReviewCommentsGet": {
+        "type": "object",
+        "properties": {
+          "profile_name": {
+            "type": "string",
+            "description": "user's name",
+            "example": "4ervonec19"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Text",
+            "example": "Thank's for your review"
+          },
+          "date_time": {
+            "type": "string",
+            "description": "Date & time of comment",
+            "example": " 23 May 12:00"
+          }
+        },
+        "required": [
+          "profile_name",
+          "comment"
+        ]
+      },
+      "ReviewHideReport": {
+        "type": "object",
+        "properties": {
+          "notification_comment": {
+            "type": "string",
+            "description": "Text",
+            "example": "You've reported on this review"
+          }
+        }
+      }
+    }
+  }
+}
