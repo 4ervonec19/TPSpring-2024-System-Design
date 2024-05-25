@@ -1,0 +1,69 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+
+Table Users
+{
+  user_id integer [primary key]
+  username varchar [not null]
+  avatar_image blob [note: "Image of user's avatar"]
+  date_time timestamp [default: 'now()', not null]
+}
+
+Table Friendship
+{
+    user_id integer
+    friend_id integer [note: "Friend ID to the User_ID, this table shows the friendship connections"]
+    date_time timestamp [default: 'now()', not null]
+}
+
+Table LobbyUsers
+{
+  lobby_id integer
+  user_id integer
+  date_time timestamp [default: 'now()', not null]
+}
+
+Table LobbyGames
+{
+  lobby_id integer
+  game_id integer
+  date_time timestamp [default: 'now()', not null]
+}
+
+Table GamesInMarket
+{
+  game_id integer [primary key]
+  game_name varchar [not null]
+  game_image blob [note: "Image of game's avatar"]
+  game_price float [not null]
+  game_genre_id integer [note: "Genre_id of game (example, shooter)"]
+  crtated_at timestamp [default: 'now()', not null]
+}
+
+Table Genres
+{
+  genre_id integer [primary key]
+  genre_name varchar [not null]
+}
+
+Table LobbyTotalPrice
+{
+  lobby_id integer [primary key]
+  total_price float [note: "Price for group to pay for roulette spin"]
+  created_at timestamp [default: 'now()', not null]
+  transaction_flag bool
+}
+
+Table GamesOwn
+{
+  user_id integer
+  game_id integer
+}
+
+Table BankAccount
+{
+  user_id integer [primary key]
+  balance float [note: "Field of balance of user"]
+}
+
