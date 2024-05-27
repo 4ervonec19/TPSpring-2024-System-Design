@@ -184,7 +184,7 @@ class VideoCacher:
 
     def add_frame(self, frame):
         temp_frame_path = get_path(self.cash_dir) #Куда в этой директории будет писать кэш
-        write(temp_frame_path, frame) #Записываем в кэш
+        write_cache(temp_frame_path, frame) #Записываем в кэш
         self.frames[link].append(temp_frame_path) # Добавляем ссылку на кадр.
     
     def write_cache(self): #Покадрово записать данные в кэш
