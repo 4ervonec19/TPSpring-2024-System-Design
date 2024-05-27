@@ -209,7 +209,7 @@ class BroadcastInfo:
         self.name = name
         self.link = link
     
-    def empty_instance(self):
+    def non_empty_instance(self):
         if self.name != '':
             return True
         else:
@@ -224,7 +224,7 @@ if __name__ == '__main__':
 ```
 * Также необходимо добавить ***подгрузку данных в облако Google Cloud*** при начале новой трансляции. Это можно сделать добавив дополнительную логику к предыдщему коду:
 ```python
-    if broadcast.empty_instance() == True:
+    if broadcast.non_empty_instance() == True:
         read_query = f"SELECT * FROM cache WHERE link = {broadcast.link};"
         data = execute(read_query, cache_dir)
         write_in_cloud(broadcast.link, data) # Что-то вроде реализации записи в облако, откуда мы будем загружать
