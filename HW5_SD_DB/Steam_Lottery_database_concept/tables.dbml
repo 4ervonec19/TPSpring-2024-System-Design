@@ -67,3 +67,20 @@ Table BankAccount
   balance float [note: "Field of balance of user"]
 }
 
+Ref: Users.user_id > Friendship.user_id 
+Ref: Users.user_id  > Friendship.friend_id
+Ref: Users.user_id > GamesOwn.user_id 
+Ref: Users.user_id > BankAccount.user_id 
+Ref: LobbyUsers.user_id < Users.user_id 
+Ref: LobbyGames.game_id < GamesInMarket.game_id 
+Ref: GamesInMarket.game_genre_id < Genres.genre_id 
+Ref: LobbyTotalPrice.lobby_id > LobbyGames.lobby_id 
+Ref: LobbyTotalPrice.lobby_id > LobbyUsers.lobby_id 
+
+
+
+
+
+
+
+
